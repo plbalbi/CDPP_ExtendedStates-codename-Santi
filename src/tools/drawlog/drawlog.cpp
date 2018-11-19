@@ -482,6 +482,7 @@ int main( int argc, char *argv[] )
 
 			}
 
+			// This is the printing part. Changing it to have a CSV-like format
 			if (!Impresion::Default.FlatLog())
 				cout << "Line : " << lineCount << " - " ;
 
