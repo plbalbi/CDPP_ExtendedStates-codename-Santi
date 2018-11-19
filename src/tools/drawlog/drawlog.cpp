@@ -27,6 +27,8 @@
 #include "logparser.h"
 #include "cellstate.h"
 
+#include "cnpy.h"
+
 using namespace std;
 
 static const string defaultPortName("out"); /* AtomicCell::outPort */
@@ -452,6 +454,7 @@ int main( int argc, char *argv[] )
 
 		do
 		{
+			// Acumulate changes till next show time
 			while( nextTime <= nextShowTime )
 			{
 				//El nextTime deberia ser mayor o igual al currentTime
@@ -482,10 +485,11 @@ int main( int argc, char *argv[] )
 
 			}
 
-			// This is the printing part. Changing it to have a CSV-like format
+			// Draw linenumber and time
 			if (!Impresion::Default.FlatLog())
 				cout << "Line : " << lineCount << " - " ;
 
+			// All state printing delegated to this method
 			printState( state, nextShowTime ) ;
 
 			if ( timeInterval == VTime::InvalidTime )
@@ -493,7 +497,7 @@ int main( int argc, char *argv[] )
 			else
 				nextShowTime = nextShowTime + timeInterval;
 
-
+		// When the are no more event issued, it means the next time will be infinity
 		} while( !(nextTime == VTime::Inf) ) ;
 
 		for( filecounter = 0; filecounter < filecount; filecounter++)
