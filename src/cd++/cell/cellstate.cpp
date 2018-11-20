@@ -189,6 +189,45 @@ void CellState::print( ostream &os, char undefChar ) const
 	}
 }
 
+
+// For now, it only work for a 2D space
+std::vector< double > CellState::toMatrix() const
+{
+	if ( dimList->dimension() != 2 ){
+		throw new std::invalid_argument("Can only process 2D states");
+	}
+
+	int rows = dimList->get(DIM_HEIGHT);
+	int columns = dimList->get(DIM_WIDTH);
+
+	std::vector< double > matrix = std::vector< double >(rows*columns);
+
+	for (int i = 0; i < dimList->get(DIM_HEIGHT); i++ )
+	{
+		for (int j = 0; j < dimList->get(DIM_WIDTH); j++ )
+		{
+			nTupla	nt;
+			nt.add(i,j);
+
+			Real currentValue = (*this)[nt];
+			double currentValueAsDouble;
+			// Since its undefined, should use a nan
+			if( currentValue.IsUndefined() )
+			{
+				// The "" string in the nan consutrction results in a generic nan
+				currentValueAsDouble = nan("");
+			}
+			else
+			{
+				currentValueAsDouble = currentValue.value();
+			}
+			matrix[i*columns + j]  = currentValueAsDouble;
+		}
+	}
+	return matrix;
+}
+
+
 /*******************************************************************
 * Function Name: printFormatedList
 ********************************************************************/

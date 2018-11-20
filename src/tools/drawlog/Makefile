@@ -6,6 +6,7 @@ SOURCES       = $(wildcard *.cpp)
 DEPS          = $(SOURCES:.cpp=.dep)
 OBJS          = $(SOURCES:.cpp=.o)
 OBJS_W_DIR    = $(addprefix ${OBJ_DIR}/, $(OBJS))
+CNPY_FLAGS	  = -L/Users/pbalbi/Facultad/pringles/voronoi/cnpy/bin -lcnpy -lz 
 
 DEPS_OBJ      = logparser.o ntupla.o cellstate.o strutil.o ini.o VTime.o real.o impresion.o tbool.o realprec.o except.o macroexp.o tokit.o value.o
 
@@ -21,7 +22,7 @@ $(TOOL_NAME) :
 	@mkdir -p ${OUT_DIR}
 	$(eval ALL_OBJS = $(shell find ../../ -type f -name '*.o'))
 	$(eval REQUIRED_OBJS = $(filter $(addprefix %, $(DEPS_OBJ)), $(ALL_OBJS)))
-	${CPP} ${CPPFLAGS} ${LDFLAGS} -o ${OUT_DIR}/$@ ${REQUIRED_OBJS} ${OBJS_W_DIR}
+	${CPP} ${CPPFLAGS} ${LDFLAGS} ${CNPY_FLAGS} -o ${OUT_DIR}/$@ ${REQUIRED_OBJS} ${OBJS_W_DIR}
 
 clean :
 	@rm -rf $(DEPS) $(OBJ_DIR)

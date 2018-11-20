@@ -20,6 +20,7 @@
 /** include files **/
 #include "cellpos.h"       // class CellPosition
 #include "real.h"
+#include <vector>
 
 /** declarations **/
 class CellState
@@ -44,6 +45,7 @@ public:
 	void calcRealPos( CellPosition &pos );
 
 	void print( std::ostream &, char ='?' ) const;
+	std::vector< double > toMatrix() const;
 	void printFormatedList( std::ostream & ) const;
 	
 private:

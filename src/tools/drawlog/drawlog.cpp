@@ -27,6 +27,8 @@
 #include "logparser.h"
 #include "cellstate.h"
 
+#include <vector>
+#include <string>
 #include "cnpy.h"
 
 using namespace std;
@@ -452,6 +454,10 @@ int main( int argc, char *argv[] )
 		//Initially, make nextTime = currentTime, to go through the loop at least once.
 		nextTime = currentTime;
 
+		bool fileAlreadyCreated = false;
+		std::string currentStateName;
+		std::vector< double > currentStateMatrix;
+
 		do
 		{
 			// Acumulate changes till next show time
@@ -491,6 +497,19 @@ int main( int argc, char *argv[] )
 
 			// All state printing delegated to this method
 			printState( state, nextShowTime ) ;
+			currentStateMatrix = state.toMatrix();
+
+			currentStateName = "state_" + std::to_string(nextShowTime.asMsecs());
+
+			if (!fileAlreadyCreated)
+			{
+				cnpy::npz_save("out.npz",currentStateName, currentStateMatrix, "w");
+				fileAlreadyCreated = true;
+			}
+			else
+			{
+				cnpy::npz_save("out.npz",currentStateName, currentStateMatrix, "a");
+			}
 
 			if ( timeInterval == VTime::InvalidTime )
 				nextShowTime = currentTime ;
