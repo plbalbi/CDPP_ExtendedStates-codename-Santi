@@ -56,6 +56,7 @@ void showHelp()
 	cout << "\t?\tShow this message\n";
 	cout << "\th\tShow this message\n";
 	cout << "\tm\tSpecify file containing the model (.ma)\n";
+	cout << "\tz\tSpecify the NumPy .npz destination filepath\n";
 	cout << "\tt\tInitial time\n";
 	cout << "\ti\tTime interval (After the initial time, draw after every time interval)\n";
 	cout << "\tc\tSpecify the coupled model to draw\n";
@@ -115,7 +116,7 @@ int main( int argc, char *argv[] )
 	{
 		VTime initial( VTime::Zero );
 		VTime timeInterval(VTime::InvalidTime);
-		string modelName, iniName, logName("-"), strWidth(""), strPrec(""), strPlane("");
+		string modelName, iniName, logName("-"), strWidth(""), strPrec(""), strPlane(""), numpyNPZFilepath;
 		string strPort("");
 
 		// parameter parsing
@@ -171,6 +172,10 @@ int main( int argc, char *argv[] )
 					
 				case 'n': /* The port to show */
 					strPort = argv [ argc ] + 2;
+					break;
+
+				case 'z':
+					numpyNPZFilepath = argv [ argc ] + 2;
 					break;
 
 				default:
@@ -503,12 +508,12 @@ int main( int argc, char *argv[] )
 
 			if (!fileAlreadyCreated)
 			{
-				cnpy::npz_save("out.npz",currentStateName, currentStateMatrix, "w");
+				cnpy::npz_save(numpyNPZFilepath, currentStateName, currentStateMatrix, "w");
 				fileAlreadyCreated = true;
 			}
 			else
 			{
-				cnpy::npz_save("out.npz",currentStateName, currentStateMatrix, "a");
+				cnpy::npz_save(numpyNPZFilepath, currentStateName, currentStateMatrix, "a");
 			}
 
 			if ( timeInterval == VTime::InvalidTime )
