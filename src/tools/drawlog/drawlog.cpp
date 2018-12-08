@@ -29,7 +29,6 @@
 
 #include <vector>
 #include <string>
-#include "cnpy.h"
 
 using namespace std;
 
@@ -504,17 +503,15 @@ int main( int argc, char *argv[] )
 			printState( state, nextShowTime ) ;
 			currentStateMatrix = state.toMatrix();
 
-			currentStateName = "state_" + std::to_string(nextShowTime.asMsecs());
+			currentStateName = "state_" + std::to_string((int) nextShowTime.asMsecs());
+			string currentStateFileName = numpyNPZFilepath + "_" + currentStateName;
 
-			if (!fileAlreadyCreated)
-			{
-				cnpy::npz_save(numpyNPZFilepath, currentStateName, currentStateMatrix, "w");
-				fileAlreadyCreated = true;
-			}
-			else
-			{
-				cnpy::npz_save(numpyNPZFilepath, currentStateName, currentStateMatrix, "a");
-			}
+			std::ofstream currentStateFile;
+			currentStateFile.open(currentStateFileName);
+
+			state.dumpInFile(currentStateFile);
+
+			currentStateFile.close();
 
 			if ( timeInterval == VTime::InvalidTime )
 				nextShowTime = currentTime ;
