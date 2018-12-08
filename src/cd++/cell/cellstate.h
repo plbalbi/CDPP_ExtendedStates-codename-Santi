@@ -47,7 +47,9 @@ public:
 	void print( std::ostream &, char ='?' ) const;
 	std::vector< double > toMatrix() const;
 	void printFormatedList( std::ostream & ) const;
-	
+
+	void dumpInFile(std::ofstream &file) const;
+
 private:
 	// ** instance variables ** //
 	Real **matrix ;
@@ -56,6 +58,7 @@ private:
 
 	CellState( const CellState & ) ;	// copy constructor no definido exprofeso
 
+    double getValueAsDouble(nTupla &nt) const;
 };	// class CellState
 
 /** inline **/

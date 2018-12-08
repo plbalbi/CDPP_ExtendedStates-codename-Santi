@@ -16,6 +16,7 @@
 
 /** include files **/
 #include <iomanip>
+#include <fstream>
 #include "cellstate.h"
 #include "impresion.h"
 
@@ -208,11 +209,53 @@ std::vector< double > CellState::toMatrix() const
 		{
 			nTupla	nt;
 			nt.add(i,j);
+            matrix[i*columns + j]  = getValueAsDouble(nt);;
+		}
+	}
+	return matrix;
+}
 
-			Real currentValue = (*this)[nt];
-			double currentValueAsDouble;
-			// Since its undefined, should use a nan
-			if( currentValue.IsUndefined() )
+std::string formatDouble(double aDouble)
+{
+	if (aDouble == nan(""))
+	{
+		return "";
+	}
+	else
+    {
+		return std::to_string(aDouble);
+	}
+}
+
+void CellState::dumpInFile(std::ofstream &file) const
+{
+	if ( dimList->dimension() != 2 ){
+		throw new std::invalid_argument("Can only process 2D states");
+	}
+
+	int rows = dimList->get(DIM_HEIGHT);
+	int columns = dimList->get(DIM_WIDTH);
+
+	std::vector< double > matrix = std::vector< double >(rows*columns);
+
+	for (int i = 0; i < dimList->get(DIM_HEIGHT); i++ )
+	{
+		for (int j = 0; j < dimList->get(DIM_WIDTH) - 1; j++ )
+		{
+			nTupla	nt;
+			nt.add(i,j);
+			file << formatDouble(getValueAsDouble(nt)) << ",";
+		}
+		nTupla nt;
+		nt.add(i, dimList->get(DIM_WIDTH)-1);
+		file << formatDouble(getValueAsDouble(nt)) << std::endl;
+	}
+}
+
+double CellState::getValueAsDouble(nTupla &nt) const {
+    double currentValueAsDouble;
+    Real currentValue = (*this)[nt];// Since its undefined, should use a nan
+    if( currentValue.IsUndefined() )
 			{
 				// The "" string in the nan consutrction results in a generic nan
 				currentValueAsDouble = nan("");
@@ -221,10 +264,7 @@ std::vector< double > CellState::toMatrix() const
 			{
 				currentValueAsDouble = currentValue.value();
 			}
-			matrix[i*columns + j]  = currentValueAsDouble;
-		}
-	}
-	return matrix;
+	return currentValueAsDouble;
 }
 
 
